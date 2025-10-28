@@ -8,6 +8,20 @@ import studentAppImage from "@assets/generated_images/Student_management_app_moc
 export default function ProjectsSection() {
   const projects = [
     {
+      title: "E-Commerce Website new",
+      description: "A responsive and user-friendly website designed to showcase and sell spice products. Developed using HTML, CSS, PHP, JavaScript, and MySQL. The system includes features such as product display, shopping cart functionality, customer order form, and admin dashboard for managing products and orders. Focused on clean UI design, smooth navigation, and real-time interactivity using JavaScript.",
+      image: ecommerceImage,
+      technologies: ["HTML", "CSS", "PHP", "JavaScript", "MySQL"],
+      icon: ShoppingCart,
+      features: [
+        "Product Display System",
+        "Shopping Cart Functionality", 
+        "Customer Order Management",
+        "Admin Dashboard",
+        "Real-time Interactivity"
+      ]
+    },
+    {
       title: "E-Commerce Website",
       description: "A responsive and user-friendly website designed to showcase and sell spice products. Developed using HTML, CSS, PHP, JavaScript, and MySQL. The system includes features such as product display, shopping cart functionality, customer order form, and admin dashboard for managing products and orders. Focused on clean UI design, smooth navigation, and real-time interactivity using JavaScript.",
       image: ecommerceImage,
