@@ -9,58 +9,140 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Phone, Mail, MapPin, Linkedin, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser"; // ✅ correct import for latest EmailJS SDK
 
 export default function ContactSection() {
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const contactInfo = [
-    { icon: Phone, label: "Phone", value: "+94 781290968", href: "tel:+94781290968", color: "text-green-500 dark:text-green-400" },
-    { icon: Mail, label: "Email", value: "sithnuwanpramudith2000@gmail.com", href: "mailto:sithnuwanpramudith2000@gmail.com", color: "text-blue-500 dark:text-blue-400" },
-    { icon: MapPin, label: "Location", value: "No: 33/D, Gamagewaththa, Kapugama, Devinuwara", href: "#", color: "text-red-500 dark:text-red-400" },
-    { icon: Linkedin, label: "LinkedIn", value: "sithnuwan-pramudith", href: "https://www.linkedin.com/in/sithnuwan-pramudith", color: "text-indigo-500 dark:text-indigo-400" }
+    {
+      icon: Phone,
+      label: "Phone",
+      value: "+94 781290968",
+      href: "tel:+94781290968",
+      color: "text-green-500 dark:text-green-400",
+    },
+    {
+      icon: Mail,
+      label: "Email",
+      value: "sithnuwanpramudith2000@gmail.com",
+      href: "mailto:sithnuwanpramudith2000@gmail.com",
+      color: "text-blue-500 dark:text-blue-400",
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: "No: 33/D, Gamagewaththa, Kapugama, Devinuwara",
+      href: "#",
+      color: "text-red-500 dark:text-red-400",
+    },
+    {
+      icon: Linkedin,
+      label: "LinkedIn",
+      value: "sithnuwan-pramudith",
+      href: "https://www.linkedin.com/in/sithnuwan-pramudith",
+      color: "text-indigo-500 dark:text-indigo-400",
+    },
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    console.log("Form submitted:", formData);
 
-    setTimeout(() => {
-      toast({ title: "Message Sent!", description: "Thank you! I'll get back to you soon." });
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setIsSubmitting(false);
-    }, 1000);
+    // ✅ EmailJS send method
+    emailjs
+      .send(
+        "service_kh2yean", // replace with your EmailJS Service ID
+        "template_8k7zkf7", // replace with your Template ID
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        "oU-yXKblL12lmmQNu" // replace with your Public Key
+      )
+      .then(() => {
+        toast({
+          title: "Message Sent!",
+          description: "Thank you! I'll get back to you soon.",
+        });
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setIsSubmitting(false);
+      })
+      .catch((error) => {
+        console.error("EmailJS Error:", error);
+        toast({
+          title: "Error",
+          description: "Failed to send the message. Please try again later.",
+        });
+        setIsSubmitting(false);
+      });
   };
 
   const handleContactClick = (contact: typeof contactInfo[0]) => {
-    if (contact.href !== "#") window.open(contact.href, contact.label === "Email" ? "_self" : "_blank");
+    if (contact.href !== "#")
+      window.open(
+        contact.href,
+        contact.label === "Email" ? "_self" : "_blank"
+      );
   };
 
-  // Motion variants
-  const container = { hidden: {}, visible: { transition: { staggerChildren: 0.15 } } };
-  const item = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } };
+  const container = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.15 } },
+  };
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
 
   return (
-    <section id="contact" className="py-20 bg-slate-50 dark:bg-[#0a192f] transition-colors duration-500">
+    <section
+      id="contact"
+      className="py-20 bg-slate-50 dark:bg-[#0a192f] transition-colors duration-500"
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-slate-900 dark:text-slate-100">Get In Touch</h2>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-slate-900 dark:text-slate-100">
+            Get In Touch
+          </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            Always interested in new opportunities, collaborations, and connections. Feel free to reach out!
+            Always interested in new opportunities, collaborations, and
+            connections. Feel free to reach out!
           </p>
         </div>
 
-        <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-12" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={container}>
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={container}
+        >
           {/* Contact Info */}
           <motion.div className="space-y-8" variants={item}>
-            <h3 className="text-2xl font-bold mb-6 text-slate-900 dark:text-slate-100">Contact Information</h3>
+            <h3 className="text-2xl font-bold mb-6 text-slate-900 dark:text-slate-100">
+              Contact Information
+            </h3>
             <div className="space-y-6">
               {contactInfo.map((contact, index) => {
                 const IconComponent = contact.icon;
@@ -76,8 +158,12 @@ export default function ContactSection() {
                       <IconComponent className={`h-6 w-6 ${contact.color}`} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-slate-900 dark:text-slate-100">{contact.label}</h4>
-                      <p className="text-slate-700 dark:text-slate-300 break-all">{contact.value}</p>
+                      <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                        {contact.label}
+                      </h4>
+                      <p className="text-slate-700 dark:text-slate-300 break-all">
+                        {contact.value}
+                      </p>
                     </div>
                   </motion.div>
                 );
@@ -91,7 +177,9 @@ export default function ContactSection() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-slate-700 dark:text-slate-300">
-                    Currently seeking internship opportunities and open to discussing exciting projects in web development, database management, and IT.
+                    Currently seeking internship opportunities and open to
+                    discussing exciting projects in web development, database
+                    management, and IT.
                   </p>
                 </CardContent>
               </Card>
@@ -109,23 +197,63 @@ export default function ContactSection() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">Name</Label>
-                      <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Your full name" required />
+                      <Input
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Your full name"
+                        required
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="your.email@example.com" required />
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="your.email@example.com"
+                        required
+                      />
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="subject">Subject</Label>
-                    <Input id="subject" name="subject" value={formData.subject} onChange={handleInputChange} placeholder="Subject" required />
+                    <Input
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      placeholder="Subject"
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" name="message" value={formData.message} onChange={handleInputChange} rows={6} placeholder="Your message..." required />
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      rows={6}
+                      placeholder="Your message..."
+                      required
+                    />
                   </div>
-                  <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white flex items-center justify-center" disabled={isSubmitting}>
-                    {isSubmitting ? "Sending..." : <><Send className="mr-2 h-4 w-4" /> Send Message</>}
+                  <Button
+                    type="submit"
+                    className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white flex items-center justify-center"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      "Sending..."
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" /> Send Message
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>
