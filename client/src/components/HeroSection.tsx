@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Download, MapPin, Phone, Mail, Linkedin } from "lucide-react";
-import profileImage from "@assets/generated_images/Professional_portfolio_headshot_1d933dbc.png";
+import profileImage from "@assets/generated_images/Professional_portfolio_headshot_1d933dbc.jpeg";
 
 interface HeroSectionProps {
   onScrollToProjects: () => void;
