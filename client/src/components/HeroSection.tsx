@@ -37,7 +37,11 @@ export default function HeroSection({ onScrollToProjects }: HeroSectionProps) {
   return (
     <section
       id="about"
-      className="min-h-screen flex items-center bg-gradient-to-b from-slate-100 to-slate-200 dark:from-[#0a192f] dark:to-[#0a2540] transition-colors"
+      className="min-h-screen flex items-center 
+      pt-28 sm:pt-32 lg:pt-0 
+      bg-gradient-to-b from-slate-100 to-slate-200 
+      dark:from-[#0a192f] dark:to-[#0a2540] 
+      transition-colors"
     >
       <motion.div
         className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center lg:items-start gap-12"
@@ -71,7 +75,8 @@ export default function HeroSection({ onScrollToProjects }: HeroSectionProps) {
           <div className="space-y-2">
             <motion.h1
               className="text-5xl lg:text-6xl font-extrabold bg-clip-text text-transparent 
-                bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 dark:from-blue-400 dark:via-cyan-300 dark:to-blue-500"
+              bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 
+              dark:from-blue-400 dark:via-cyan-300 dark:to-blue-500"
               variants={item}
             >
               K.S. Pramudith
@@ -122,7 +127,9 @@ export default function HeroSection({ onScrollToProjects }: HeroSectionProps) {
             <Button
               variant="outline"
               size="lg"
-              className="border border-blue-400 text-blue-600 hover:bg-blue-200/20 dark:border-blue-500 dark:text-blue-300 dark:hover:bg-blue-600/20 flex items-center gap-2 transition-transform duration-300"
+              className="border border-blue-400 text-blue-600 hover:bg-blue-200/20 
+              dark:border-blue-500 dark:text-blue-300 dark:hover:bg-blue-600/20 
+              flex items-center gap-2 transition-transform duration-300"
               onClick={handleDownloadCV}
             >
               <Download className="h-5 w-5" /> Download CV
