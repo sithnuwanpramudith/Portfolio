@@ -1,142 +1,173 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Download, MapPin, Phone, Mail, Linkedin } from "lucide-react";
-import profileImage from "@assets/generated_images/Professional_portfolio_headshot_1d933dbc.jpeg";
+import { Moon, Sun, Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-interface HeroSectionProps {
-  onScrollToProjects: () => void;
+interface HeaderProps {
+  isDark: boolean;
+  toggleDark: () => void;
 }
 
-export default function HeroSection({ onScrollToProjects }: HeroSectionProps) {
-  const handleDownloadCV = () => {
-    const link = document.createElement("a");
-    link.href = "/files/KS_Pramudith_CV.pdf";
-    link.download = "K.S._Pramudith_CV.pdf";
-    link.click();
-  };
+export default function Header({ isDark, toggleDark }: HeaderProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("about");
 
-  const container = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-  };
-
-  const contacts = [
-    { icon: MapPin, label: "Devinuwara, Sri Lanka", color: "text-red-500 dark:text-red-400" },
-    { icon: Phone, label: "+94 781290968", color: "text-green-500 dark:text-green-400" },
-    { icon: Mail, label: "sithnuwanpramudith2000@gmail.com", color: "text-blue-500 dark:text-blue-400" },
-    { icon: Linkedin, label: "sithnuwan-pramudith", color: "text-indigo-500 dark:text-indigo-400" },
+  const navigationItems = [
+    { id: "about", label: "About" },
+    { id: "skills", label: "Skills" },
+    { id: "projects", label: "Projects" },
+    { id: "education", label: "Education" },
+    { id: "contact", label: "Contact" },
   ];
 
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  // Highlight active section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + window.innerHeight / 3;
+      for (const item of navigationItems) {
+        const sec = document.getElementById(item.id);
+        if (sec && sec.offsetTop <= scrollPos && sec.offsetTop + sec.offsetHeight > scrollPos) {
+          setActiveSection(item.id);
+          break;
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section
-      id="about"
-      className="min-h-screen flex items-center 
-      pt-28 sm:pt-32 lg:pt-0 
-      bg-gradient-to-b from-slate-100 to-slate-200 
-      dark:from-[#0a192f] dark:to-[#0a2540] 
-      transition-colors"
+    <motion.header
+      initial={{ y: -60, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-500
+        ${isDark
+          ? "bg-gradient-to-r from-[#0a192f]/90 to-[#112240]/90 border-blue-800/40"
+          : "bg-white/70 backdrop-blur-md border-blue-100"
+        }`}
     >
-      <motion.div
-        className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center lg:items-start gap-12"
-        variants={container}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Profile Image */}
-        <motion.div variants={item} className="flex justify-center lg:justify-start items-center">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
           <motion.div
             whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            className="relative w-72 h-72 lg:w-80 lg:h-80"
+            onClick={() => scrollToSection("about")}
+            className={`font-extrabold text-xl cursor-pointer transition-colors 
+              ${isDark
+                ? "bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text"
+                : "text-blue-700"
+              }`}
           >
-            <div
-              className="absolute inset-0 rounded-full blur-3xl opacity-30 animate-pulse
-              bg-gradient-to-tr from-blue-500 via-cyan-400 to-transparent
-              dark:from-blue-400 dark:via-cyan-300 dark:to-transparent"
-            />
-            <img
-              src={profileImage}
-              alt="K.S. Pramudith"
-              className="relative w-full h-full rounded-full object-cover border-4 border-blue-500 dark:border-blue-400 shadow-2xl"
-            />
+            K.S. Pramudith
           </motion.div>
-        </motion.div>
 
-        {/* Content */}
-        <motion.div variants={item} className="flex-1 space-y-6">
-          {/* Name & Role */}
-          <div className="space-y-2">
-            <motion.h1
-              className="text-5xl lg:text-6xl font-extrabold bg-clip-text text-transparent 
-              bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 
-              dark:from-blue-400 dark:via-cyan-300 dark:to-blue-500"
-              variants={item}
-            >
-              K.S. Pramudith
-            </motion.h1>
-            <motion.p
-              className="text-xl font-medium text-slate-700 dark:text-slate-300"
-              variants={item}
-            >
-              Information Technology Undergraduate
-            </motion.p>
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {navigationItems.map((item) => (
+              <motion.button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                whileHover={{ scale: 1.05 }}
+                className={`relative transition-colors duration-300 ${
+                  activeSection === item.id
+                    ? isDark
+                      ? "text-cyan-400 font-semibold"
+                      : "text-blue-600 font-semibold"
+                    : isDark
+                    ? "text-slate-300 hover:text-cyan-300"
+                    : "text-slate-700 hover:text-blue-600"
+                }`}
+              >
+                {item.label}
+                {activeSection === item.id && (
+                  <motion.span
+                    layoutId="underline"
+                    className={`absolute left-0 -bottom-1 w-full h-0.5 rounded-full ${
+                      isDark ? "bg-cyan-400" : "bg-blue-600"
+                    }`}
+                  />
+                )}
+              </motion.button>
+            ))}
+          </nav>
+
+          {/* Theme + Mobile buttons */}
+          <div className="flex items-center space-x-3">
+            {/* Dark Mode Toggle */}
+            <motion.div whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleDark}
+                className="hover:bg-blue-500/10"
+              >
+                {isDark ? (
+                  <Sun className="h-5 w-5 text-yellow-400" />
+                ) : (
+                  <Moon className="h-5 w-5 text-blue-600" />
+                )}
+              </Button>
+            </motion.div>
+
+            {/* Mobile Menu Toggle */}
+            <motion.div whileTap={{ scale: 0.9 }} className="md:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X /> : <Menu />}
+              </Button>
+            </motion.div>
           </div>
+        </div>
 
-          {/* Description */}
-          <motion.p
-            className="text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl"
-            variants={item}
-          >
-            Motivated IT student pursuing Higher National Diploma in IT (HNDIT) at SLIATE Labuduwa.
-            Passionate about solving problems, building scalable software, and contributing to innovative digital solutions.
-          </motion.p>
-
-          {/* Contact Info Pills */}
-          <motion.div className="flex flex-wrap gap-3 mt-4" variants={item}>
-            {contacts.map((c, idx) => {
-              const Icon = c.icon;
-              return (
-                <motion.div
-                  key={idx}
-                  className="flex items-center gap-2 px-5 py-2 bg-white dark:bg-[#0f1f3a] rounded-full text-slate-900 dark:text-white shadow-md hover:shadow-xl cursor-pointer transition-all duration-300"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                >
-                  <Icon className={`h-5 w-5 ${c.color}`} />
-                  <span className="text-sm font-medium">{c.label}</span>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-
-          {/* Action Buttons */}
-          <motion.div className="flex flex-wrap gap-4 mt-6" variants={item}>
-            <Button
-              size="lg"
-              className="bg-blue-500 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 flex items-center gap-2 transition-transform duration-300"
-              onClick={onScrollToProjects}
+        {/* Mobile Nav */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.nav
+              initial={{ maxHeight: 0, opacity: 0 }}
+              animate={{ maxHeight: 500, opacity: 1 }}
+              exit={{ maxHeight: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className={`md:hidden overflow-hidden absolute top-16 left-0 w-full py-4 bg-white dark:bg-[#0a192f] border-t z-40 transition-colors ${
+                isDark ? "border-blue-800/50" : "border-blue-100"
+              }`}
             >
-              View Projects <ArrowRight className="h-5 w-5" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border border-blue-400 text-blue-600 hover:bg-blue-200/20 
-              dark:border-blue-500 dark:text-blue-300 dark:hover:bg-blue-600/20 
-              flex items-center gap-2 transition-transform duration-300"
-              onClick={handleDownloadCV}
-            >
-              <Download className="h-5 w-5" /> Download CV
-            </Button>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    </section>
+              <div className="flex flex-col space-y-4 px-6">
+                {navigationItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`text-left text-base transition-colors ${
+                      activeSection === item.id
+                        ? isDark
+                          ? "text-cyan-400 font-semibold"
+                          : "text-blue-600 font-semibold"
+                        : isDark
+                        ? "text-slate-300 hover:text-cyan-300"
+                        : "text-slate-700 hover:text-blue-600"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.header>
   );
 }
